@@ -4,14 +4,25 @@ import { theme } from './theme';
 type TodoItemProps = {
   todoValue: string;
   isCompleted?: boolean;
+  markComplete: () => void;
 };
 
-export function TodoItem({ todoValue, isCompleted }: TodoItemProps) {
+export function TodoItem({
+  todoValue,
+  isCompleted,
+  markComplete,
+}: TodoItemProps) {
   function handlePress() {
-    Alert.alert('Delete Todo', 'Are you sure you want to delete this todo?', [
-      { text: 'Yes', onPress: () => console.log('Todo deleted') },
-      { text: 'No', onPress: () => console.log('Todo not deleted') },
-    ]);
+    Alert.alert(
+      'Delete Todo',
+      `Are you sure you want to mark this todo ${
+        isCompleted ? 'pending' : 'done'
+      } ?`,
+      [
+        { text: 'Yes', onPress: () => markComplete() },
+        { text: 'No', onPress: () => console.log('Todo not deleted') },
+      ]
+    );
   }
   return (
     <View style={styles.todoContainer}>
@@ -30,7 +41,9 @@ export function TodoItem({ todoValue, isCompleted }: TodoItemProps) {
         ]}
         onPress={handlePress}
       >
-        <Text style={styles.buttonText}>Done</Text>
+        <Text style={styles.buttonText}>
+          {isCompleted ? 'Mark Pending' : 'Mark Done'}
+        </Text>
       </TouchableOpacity>
     </View>
   );

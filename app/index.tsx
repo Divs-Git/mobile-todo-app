@@ -3,17 +3,32 @@ import { TodoItem } from './TodoItem';
 import { theme } from './theme';
 import { useState } from 'react';
 
+type todoItem = {
+  todoValue: string;
+  isCompleted?: boolean;
+};
+
 export default function HomeScreen() {
   const [newTodo, setNewTodo] = useState<string>('');
-  const [todoList, setTodoList] = useState<string[]>([]);
+  const [todoList, setTodoList] = useState<todoItem[]>([]);
 
   function handleChange(data: string) {
     setNewTodo(data);
   }
 
   function handleSubmit() {
-    setTodoList([...todoList, newTodo]);
+    setTodoList([...todoList, { todoValue: newTodo, isCompleted: false }]);
     setNewTodo('');
+  }
+
+  function handleTodoComplete(index: number) {
+    const newTodoList = todoList.map((todo, i) => {
+      if (i === index) {
+        return { ...todo, isCompleted: !todo.isCompleted };
+      }
+      return todo;
+    });
+    setTodoList(newTodoList);
   }
 
   return (
@@ -27,7 +42,12 @@ export default function HomeScreen() {
         onSubmitEditing={handleSubmit}
       />
       {todoList.map((todo, index) => (
-        <TodoItem key={index} todoValue={todo} />
+        <TodoItem
+          key={index}
+          todoValue={todo.todoValue}
+          isCompleted={todo.isCompleted}
+          markComplete={() => handleTodoComplete(index)}
+        />
       ))}
     </View>
   );
